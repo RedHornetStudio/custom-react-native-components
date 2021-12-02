@@ -4,7 +4,9 @@ import { StyleSheet, TextInput } from 'react-native';
 const CustomInput = props => {
 
   if(props.inputType !== undefined) {
-    if(typeof props.inputType !== 'string') {
+    if(!props.onChangeText) {
+      throw 'input type must be used in combination with onTextChange'
+    } else if(typeof props.inputType !== 'string') {
       throw 'inpuType must be a string';
     } else if(props.inputType === '') {
       throw 'inputType must be a non empty string';
@@ -18,6 +20,7 @@ const CustomInput = props => {
   }
 
   const handleOnChageText = (text) => {
+    if(!props.onChangeText) return;
     switch (props.inputType) {
       case 'numbers':
         text = text.replace(/[^0-9]/g, '');
@@ -35,7 +38,7 @@ const CustomInput = props => {
         text = text.replace(/[^A-z]/g, '');
         break;
     }
-    if(props.onChangeText) props.onChangeText();
+    props.onChangeText(text);
   };
 
   return (

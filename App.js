@@ -6,6 +6,7 @@ import CustomInput from './components/CustomInput';
 
 export default function App() {
   const [text, setText] = useState('');
+  console.log(text);
 
   return (
     <View style={styles.container}>

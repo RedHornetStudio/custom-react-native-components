@@ -1,3 +1,6 @@
+// Any pressable or touchable will not work iside CustomPressableOpacity, because rippleContainer have zIndez 1 and
+// is above all childrens
+
 import React, { useRef } from 'react';
 import { StyleSheet, Pressable, Animated, View } from 'react-native';
 
@@ -53,27 +56,19 @@ const CustomPressableOpacity = props => {
     }
   };
 
-  const pressableProps = () => {
-    const a = {...props};
-    delete a.style;
-    return a;
-  };
-
   return (
-    <Pressable {...pressableProps()} onPressIn={() => sizeUp()} onPressOut={() => fadeOut()}>
-      <View style={[styles.customPressableOpacity, props.style]}>
-        <View style={[styles.rippleContainer, style(props.style)]}>
-          <Animated.View style={[styles.ripple, { opacity: opacityAnim }, { transform: [{ scale: sizeAnim }] }]}></Animated.View>
-        </View>
-        {props.children}
+    <Pressable {...props} style={[styles.container, props.style]} onPressIn={() => sizeUp()} onPressOut={() => fadeOut()}>
+      <View style={[styles.rippleContainer, style(props.style)]}>
+        <Animated.View style={[styles.ripple, { opacity: opacityAnim }, { transform: [{ scale: sizeAnim }] }]}></Animated.View>
       </View>
+      {props.children}
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  customPressableOpacity: {
-    backgroundColor: 'transparent',
+  container: {
+
   },
   rippleContainer: {
     overflow: 'hidden',

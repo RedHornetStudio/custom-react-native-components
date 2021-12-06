@@ -1,9 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-import CustomInput from './components/CustomInput';
-import CustomCard from './components/CustomCard';
+import CustomPressableRipple  from './components/CustomPressableRipple';
 
 export default function App() {
   const [text, setText] = useState('');
@@ -11,18 +10,10 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <CustomCard style={styles.customCard}>
-        <Text>aaa</Text>
-        <Text>aaa</Text>
-        <Text>aaa</Text>
-        <Text>aaa</Text>
-        <Text>aaa</Text>
-        <Text>aaa</Text>
-        <Text>aaa</Text>
-        <Text>aaa</Text>
-      </CustomCard>
-      <CustomInput style={styles.customInput} value={text} onChangeText={(text) => setText(text)} keyboardType="numeric" inputType="decimal" />
+      <Text style={{ backgroundColor: 'green' }}>Open up App.js to start working on your app!</Text>
+      <CustomPressableRipple style={styles.button}>
+        <Text style={styles.text}>pressableRipple</Text>
+      </CustomPressableRipple>
       <StatusBar style="auto" />
     </View>
   );
@@ -31,14 +22,17 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 40,
-    backgroundColor: '#fff',
+    paddingTop: 40,
+    backgroundColor: 'grey',
   },
-  customCard: {
-    marginVertical: 10,
+  button: {
+    alignSelf: 'center',
+    alignItems: 'center',
     padding: 20,
+    backgroundColor: 'blue',
+    borderRadius: 25,
   },
-  customInput: {
-    width: '50%',
+  text: {
+    color: 'white',
   },
 });

@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { StyleSheet, Pressable, Animated } from 'react-native';
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 const CustomPressableOpacity = props => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
@@ -20,25 +22,17 @@ const CustomPressableOpacity = props => {
     }).start();
   };
 
-  const pressableProps = () => {
-    const a = {...props};
-    delete a.style;
-    return a;
-  };
-
   return (
-    <Pressable {...pressableProps()} onPressIn={() => fadeOut()} onPressOut={() => fadeIn()}>
-      <Animated.View style={[styles.customPressableOpacity, props.style, { opacity: fadeAnim }]}>
-        {props.children}
-      </Animated.View>
-    </Pressable>
+    <AnimatedPressable {...props} style={[styles.container, props.style, { opacity: fadeAnim }]} onPressIn={() => fadeOut()} onPressOut={() => fadeIn()}>
+      {props.children}
+    </AnimatedPressable>
   );
 };
 
 const styles = StyleSheet.create({
-  customPressableOpacity: {
-    backgroundColor: 'transparent',
-  }
+  container: {
+
+  },
 });
 
 export default CustomPressableOpacity;

@@ -14,7 +14,7 @@ const CustomPressableRipple = props => {
     Animated.parallel([
       Animated.timing(sizeAnim, {
         toValue: 1000,
-        duration: 2000,
+        duration: 1500,
         useNativeDriver: true,
       }),
       Animated.timing(opacityAnim, {
@@ -29,7 +29,7 @@ const CustomPressableRipple = props => {
     Animated.parallel([
       Animated.timing(sizeAnim, {
         toValue: 1000,
-        duration: 1000,
+        duration: 750,
         useNativeDriver: true,
       }),
       Animated.timing(opacityAnim, {
@@ -40,24 +40,30 @@ const CustomPressableRipple = props => {
     ]).start();
   };
 
-  const style = (style) => {
-    if(style) {
-      return {
-        borderRadius: style.borderRadius,
-        borderTopLeftRadius: style.borderTopLeftRadius,
-        borderTopStartRadius: style.borderTopStartRadius,
-        borderTopEndRadius: style.borderTopEndRadius,
-        borderTopRightRadius: style.borderTopRightRadius,
-        borderTopLeftRadius: style.borderTopLeftRadius,
-        borderTopStartRadius: style.borderTopStartRadius,
-        borderTopEndRadius: style.borderTopEndRadius,
-        borderTopRightRadius: style.borderTopRightRadius,
-      }
+  const style = styleProp => {
+    if(Array.isArray(styleProp)) {
+      let array = []
+      styleProp.forEach(element => {
+        array.push(style(element));
+      });
+      return array;
+    } else if(typeof styleProp === 'object') {
+      let obj = {};
+      if(styleProp.borderRadius || styleProp.borderRadius === 0) obj.borderRadius = styleProp.borderRadius;
+      if(styleProp.borderTopStartRadius || styleProp.borderTopStartRadius === 0) obj.borderTopStartRadius = styleProp.borderTopStartRadius;
+      if(styleProp.borderTopEndRadius || styleProp.borderTopEndRadius === 0) obj.borderTopEndRadius = styleProp.borderTopEndRadius;
+      if(styleProp.borderTopRightRadius || styleProp.borderTopRightRadius === 0) obj.borderTopRightRadius = styleProp.borderTopRightRadius;
+      if(styleProp.borderTopLeftRadius || styleProp.borderTopLeftRadius === 0) obj.borderTopLeftRadius = styleProp.borderTopLeftRadius;
+      if(styleProp.borderBottomStartRadius || styleProp.borderBottomStartRadius === 0) obj.borderBottomStartRadius = styleProp.borderBottomStartRadius;
+      if(styleProp.borderBottomEndRadius || styleProp.borderBottomEndRadius === 0) obj.borderBottomEndRadius = styleProp.borderBottomEndRadius;
+      if(styleProp.borderBottomRightRadius || styleProp.borderBottomRightRadius === 0) obj.borderBottomRightRadius = styleProp.borderBottomRightRadius;
+      if(styleProp.borderBottomLeftRadius || styleProp.borderBottomLeftRadius === 0) obj.borderBottomLeftRadius = styleProp.borderBottomLeftRadius;
+      return obj;
     }
   };
 
   return (
-    <Pressable {...props} style={[styles.container, props.style]} onPressIn={() => sizeUp()} onPressOut={() => fadeOut()}>
+    <Pressable {...props} style={[styles.container, props.style]} onPressIn={() => {sizeUp(); if(props.onPressIn) props.onPressIn()}} onPressOut={() => {fadeOut(); if(props.onPressOut) props.onPressOut()}}>
       <View style={[styles.rippleContainer, style(props.style)]}>
         <Animated.View style={[styles.ripple, { opacity: opacityAnim }, { transform: [{ scale: sizeAnim }] }]}></Animated.View>
       </View>

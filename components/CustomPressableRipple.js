@@ -4,7 +4,7 @@
 import React, { useRef } from 'react';
 import { StyleSheet, Pressable, Animated, View } from 'react-native';
 
-const CustomPressableOpacity = props => {
+const CustomPressableRipple = props => {
   const sizeAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
@@ -89,4 +89,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CustomPressableOpacity;
+export default CustomPressableRipple;

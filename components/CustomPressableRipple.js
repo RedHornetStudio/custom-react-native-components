@@ -1,9 +1,7 @@
 // Any Pressable or Touchable will not work inside CustomPressableRipple, because rippleContainer have properties 
 // zIndex=1 and pointerEvents="none" and is above all childrens and childrens are in View with property pointerEvents="none".
 
-// Use contentContainerStyle property for styling View inside pressable
-
-// Use style property for styling outer styles such margin, alignSelf etc.
+// Use contentContainerStyle property for styling View inside pressable.
 
 import React, { useRef } from 'react';
 import { StyleSheet, Pressable, Animated, View } from 'react-native';
@@ -70,7 +68,7 @@ const CustomPressableRipple = props => {
 
   return (
     <Pressable {...props} style={[styles.container, props.style]} onPressIn={evt => {sizeUp(evt); if(props.onPressIn) props.onPressIn()}} onPressOut={() => {fadeOut(); if(props.onPressOut) props.onPressOut()}}>
-      <View style={[styles.rippleContainer, style(props.contentContainerStyle)]} pointerEvents="none">
+      <View style={[styles.rippleContainer, style(props.style)]} pointerEvents="none">
         <Animated.View
           style={[
             styles.ripple,

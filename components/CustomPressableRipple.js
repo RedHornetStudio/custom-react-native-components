@@ -1,16 +1,22 @@
-// Any pressable or touchable will not work iside CustomPressableOpacity, because rippleContainer have zIndez 1 and
-// is above all childrens
+// Any Pressable or Touchable will not work inside CustomPressableRipple, because rippleContainer have properties 
+// zIndex=1 and pointerEvents="none" and is above all childrens and childrens are in View with property pointerEvents="none".
+
+// Use contentContainerStyle property for styling View inside pressable
+
+// Use style property for styling outer styles such margin, alignSelf etc.
 
 import React, { useRef } from 'react';
 import { StyleSheet, Pressable, Animated, View } from 'react-native';
 
 const CustomPressableRipple = props => {
-  const sizeAnim = useRef(new Animated.Value(0)).current;
+  const sizeAnim = useRef(new Animated.Value(1)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
+  const pressLocation = useRef(new Animated.ValueXY()).current;
 
-  const sizeUp = () => {
-    sizeAnim.setValue(0);
+  const sizeUp = evt => {
+    sizeAnim.setValue(1);
     opacityAnim.setValue(0);
+    pressLocation.setValue({ x: evt.nativeEvent.locationX, y: evt.nativeEvent.locationY });
     Animated.parallel([
       Animated.timing(sizeAnim, {
         toValue: 1000,
@@ -63,11 +69,21 @@ const CustomPressableRipple = props => {
   };
 
   return (
-    <Pressable {...props} style={[styles.container, props.style]} onPressIn={() => {sizeUp(); if(props.onPressIn) props.onPressIn()}} onPressOut={() => {fadeOut(); if(props.onPressOut) props.onPressOut()}}>
-      <View style={[styles.rippleContainer, style(props.style)]}>
-        <Animated.View style={[styles.ripple, { opacity: opacityAnim }, { transform: [{ scale: sizeAnim }] }]}></Animated.View>
+    <Pressable {...props} style={[styles.container, props.style]} onPressIn={evt => {sizeUp(evt); if(props.onPressIn) props.onPressIn()}} onPressOut={() => {fadeOut(); if(props.onPressOut) props.onPressOut()}}>
+      <View style={[styles.rippleContainer, style(props.contentContainerStyle)]} pointerEvents="none">
+        <Animated.View
+          style={[
+            styles.ripple,
+            {
+              opacity: opacityAnim,
+              transform: [{ scale: sizeAnim }, { translateX: Animated.divide(pressLocation.x, sizeAnim)}, { translateY: Animated.divide(pressLocation.y, sizeAnim)}]
+            }
+          ]}>
+        </Animated.View>
       </View>
-      {props.children}
+      <View style={[styles.contentContainerStyle, props.contentContainerStyle]} pointerEvents="none">
+        {props.children}
+      </View>
     </Pressable>
   );
 };
@@ -76,10 +92,11 @@ const styles = StyleSheet.create({
   container: {
 
   },
+  contentContainerStyle: {
+
+  },
   rippleContainer: {
     overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
     position: 'absolute',
     top: 0,
     left: 0,
@@ -88,6 +105,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   ripple: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: 4,
     height: 4,
     borderRadius: 4 / 2,

@@ -1,19 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, PanResponder, Pressable, TouchableOpacity } from 'react-native';
 
-import CustomPressableRipple  from './components/CustomPressableRipple';
+import PanResponderTest from './components/PanResponderTest';
+import CustomPressableRipple from './components/CustomPressableRipple';
 
 export default function App() {
-  const [text, setText] = useState('');
-  console.log(text);
-
   return (
     <View style={styles.container}>
-      <Text style={{ backgroundColor: 'green' }}>Open up App.js to start working on your app!</Text>
-      <CustomPressableRipple style={styles.button}>
-        <Text style={styles.text}>pressableRipple</Text>
-      </CustomPressableRipple>
+      {/* <PanResponderTest></PanResponderTest> */}
+      <CustomPressableRipple style={styles.button} contentContainerStyle={{ backgroundColor: 'green', borderRadius: 20, padding: 20 }}><Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text><Pressable onPress={() => console.log('aaaa')} style={ {backgroundColor: 'blue'} }><Text>bbbbbbbbbbbbbbbbbbb<Text></Text></Text></Pressable></CustomPressableRipple>
+      <TouchableOpacity style={{ backgroundColor: 'red', padding: 30, }}><Text>Touch me!</Text></TouchableOpacity>
       <StatusBar style="auto" />
     </View>
   );
@@ -22,17 +19,16 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingTop: 40,
-    backgroundColor: 'grey',
   },
   button: {
-    alignSelf: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'blue',
-    borderRadius: 25,
+    marginTop: 20,
   },
-  text: {
-    color: 'white',
-  },
+  pressable: {
+    width: 100,
+    height: 100,
+    backgroundColor: 'green',
+  }
 });

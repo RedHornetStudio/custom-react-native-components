@@ -13,16 +13,14 @@ const CustomPressableRipple = props => {
 
   let elementHeight = useRef(0).current;
   let elementWidth = useRef(0).current;
-  let onPressOutCount = useRef(0).current;
 
   const sizeUp = evt => {
     rippleDiameter = Math.sqrt(Math.pow(elementHeight, 2) + Math.pow(elementWidth, 2)) / 2
     sizeAnim.setValue(1);
     opacityAnim.setValue(0);
-    onPressOutCount > 0
+    evt.nativeEvent.locationX > elementWidth || evt.nativeEvent.locationY > elementHeight
       ? pressLocation.setValue({ x: elementWidth / 2, y: elementHeight / 2 })
       : pressLocation.setValue({ x: evt.nativeEvent.locationX, y: evt.nativeEvent.locationY });
-    onPressOutCount++;
     Animated.parallel([
       Animated.timing(sizeAnim, {
         toValue: rippleDiameter,
@@ -80,7 +78,6 @@ const CustomPressableRipple = props => {
       style={[styles.container, props.style]}
       onPressIn={evt => {sizeUp(evt); if(props.onPressIn) props.onPressIn()}}
       onPressOut={() => {fadeOut(); if(props.onPressOut) props.onPressOut()}}
-      onPress={() => {onPressOutCount = 0; if(props.onPress) props.onPress()}}
       onLayout={evt => {elementHeight = evt.nativeEvent.layout.height; elementWidth = evt.nativeEvent.layout.width}}
     >
       <View style={[styles.rippleContainer, style(props.style)]} pointerEvents="none">

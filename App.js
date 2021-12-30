@@ -9,7 +9,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       {/* <PanResponderTest></PanResponderTest> */}
-      <CustomPressableRipple style={styles.button} contentContainerStyle={{ backgroundColor: 'green', borderRadius: 20, padding: 20 }}><Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text><Pressable onPress={() => console.log('aaaa')} style={ {backgroundColor: 'blue'} }><Text>bbbbbbbbbbbbbbbbbbb<Text></Text></Text></Pressable></CustomPressableRipple>
+      <CustomPressableRipple style={styles.button} rippleColor="black" rippleOpacity={0.2}><Text>aaaaaaaa</Text><Pressable onPress={() => console.log('aaaa')} style={ {backgroundColor: 'blue'} }><Text>bbbbbbbbbbbbbbbbbbb<Text></Text></Text></Pressable></CustomPressableRipple>
       <TouchableOpacity style={{ backgroundColor: 'red', padding: 30, }}><Text>Touch me!</Text></TouchableOpacity>
       <StatusBar style="auto" />
     </View>
@@ -22,9 +22,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 40,
+    paddingHorizontal: 50
   },
   button: {
     marginTop: 20,
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 20,
   },
   pressable: {
     width: 100,

@@ -11,19 +11,27 @@ const CustomPressableRipple = props => {
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const pressLocation = useRef(new Animated.ValueXY()).current;
 
+  let elementHeight = useRef(0).current;
+  let elementWidth = useRef(0).current;
+  let onPressOutCount = useRef(0).current;
+
   const sizeUp = evt => {
+    rippleDiameter = Math.sqrt(Math.pow(elementHeight, 2) + Math.pow(elementWidth, 2)) / 2
     sizeAnim.setValue(1);
     opacityAnim.setValue(0);
-    pressLocation.setValue({ x: evt.nativeEvent.locationX, y: evt.nativeEvent.locationY });
+    onPressOutCount > 0
+      ? pressLocation.setValue({ x: elementWidth / 2, y: elementHeight / 2 })
+      : pressLocation.setValue({ x: evt.nativeEvent.locationX, y: evt.nativeEvent.locationY });
+    onPressOutCount++;
     Animated.parallel([
       Animated.timing(sizeAnim, {
-        toValue: 1000,
-        duration: 1500,
+        toValue: rippleDiameter,
+        duration: 400,
         useNativeDriver: true,
       }),
       Animated.timing(opacityAnim, {
-        toValue: 0.2,
-        duration: 200,
+        toValue: props.rippleOpacity ? props.rippleOpacity : 0.2,
+        duration: 50,
         useNativeDriver: true,
       })
     ]).start();
@@ -32,8 +40,8 @@ const CustomPressableRipple = props => {
   const fadeOut = () => {
     Animated.parallel([
       Animated.timing(sizeAnim, {
-        toValue: 1000,
-        duration: 750,
+        toValue: rippleDiameter,
+        duration: 200,
         useNativeDriver: true,
       }),
       Animated.timing(opacityAnim, {
@@ -67,12 +75,20 @@ const CustomPressableRipple = props => {
   };
 
   return (
-    <Pressable {...props} style={[styles.container, props.style]} onPressIn={evt => {sizeUp(evt); if(props.onPressIn) props.onPressIn()}} onPressOut={() => {fadeOut(); if(props.onPressOut) props.onPressOut()}}>
+    <Pressable
+      {...props}
+      style={[styles.container, props.style]}
+      onPressIn={evt => {sizeUp(evt); if(props.onPressIn) props.onPressIn()}}
+      onPressOut={() => {fadeOut(); if(props.onPressOut) props.onPressOut()}}
+      onPress={() => {onPressOutCount = 0; if(props.onPress) props.onPress()}}
+      onLayout={evt => {elementHeight = evt.nativeEvent.layout.height; elementWidth = evt.nativeEvent.layout.width}}
+    >
       <View style={[styles.rippleContainer, style(props.style)]} pointerEvents="none">
         <Animated.View
           style={[
             styles.ripple,
             {
+              backgroundColor: props.rippleColor ? props.rippleColor : '#000',
               opacity: opacityAnim,
               transform: [{ scale: sizeAnim }, { translateX: Animated.divide(pressLocation.x, sizeAnim)}, { translateY: Animated.divide(pressLocation.y, sizeAnim)}]
             }
@@ -109,7 +125,6 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 4 / 2,
-    backgroundColor: '#000000',
   }
 });
 

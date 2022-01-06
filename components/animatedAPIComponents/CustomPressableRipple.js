@@ -4,39 +4,51 @@
 // Use contentContainerStyle property for styling View inside pressable.
 
 import React, { useRef } from 'react';
-import { StyleSheet, Pressable, View } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { StyleSheet, Pressable, Animated, View } from 'react-native';
 
 const CustomPressableRipple = props => {
-  const animatedSize = useSharedValue(1);
-  const animatedOpacity = useSharedValue(0)
-  const pressLocation = useSharedValue({ x: 0, y: 0 });
+  const sizeAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+  const pressLocation = useRef(new Animated.ValueXY()).current;
 
   let elementHeight = useRef(0).current;
   let elementWidth = useRef(0).current;
   let rippleSize = useRef(0).current;
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: animatedOpacity.value,
-      transform: [{ scale: animatedSize.value }, { translateX: pressLocation.value.x / animatedSize.value }, { translateY: pressLocation.value.y / animatedSize.value }]
-    }
-  });
-
   const sizeUp = evt => {
     rippleSize = Math.sqrt(Math.pow(elementHeight, 2) + Math.pow(elementWidth, 2)) / 2
-    animatedSize.value = 1;
-    animatedOpacity.value = 0;
+    sizeAnim.setValue(1);
+    opacityAnim.setValue(0);
     evt.nativeEvent.locationX > elementWidth || evt.nativeEvent.locationY > elementHeight
-      ? pressLocation.value = { x: elementWidth / 2, y: elementHeight / 2 }
-      : pressLocation.value = { x: evt.nativeEvent.locationX, y: evt.nativeEvent.locationY };
-    animatedSize.value = withTiming(rippleSize, { duration: 400 });
-    animatedOpacity.value = withTiming(props.rippleOpacity ? props.rippleOpacity : 0.2, { duration: 50 });
+      ? pressLocation.setValue({ x: elementWidth / 2, y: elementHeight / 2 })
+      : pressLocation.setValue({ x: evt.nativeEvent.locationX, y: evt.nativeEvent.locationY });
+    Animated.parallel([
+      Animated.timing(sizeAnim, {
+        toValue: rippleSize,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: props.rippleOpacity ? props.rippleOpacity : 0.2,
+        duration: 50,
+        useNativeDriver: true,
+      })
+    ]).start();
   };
 
   const fadeOut = () => {
-    animatedSize.value = withTiming(rippleSize, { duration: 400 });
-    animatedOpacity.value = withTiming(0, { duration: 400 });
+    Animated.parallel([
+      Animated.timing(sizeAnim, {
+        toValue: rippleSize,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      })
+    ]).start();
   };
 
   const style = styleProp => {
@@ -75,8 +87,9 @@ const CustomPressableRipple = props => {
             styles.ripple,
             {
               backgroundColor: props.rippleColor ? props.rippleColor : '#000',
-            },
-            animatedStyle
+              opacity: opacityAnim,
+              transform: [{ scale: sizeAnim }, { translateX: Animated.divide(pressLocation.x, sizeAnim)}, { translateY: Animated.divide(pressLocation.y, sizeAnim)}]
+            }
           ]}>
         </Animated.View>
       </View>

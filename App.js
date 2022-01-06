@@ -9,8 +9,11 @@ export default function App() {
   return (
     <View style={styles.container}>
       {/* <PanResponderTest></PanResponderTest> */}
-      <CustomPressableRipple style={styles.button} rippleColor="black" rippleOpacity={0.2}><Text>aaaaaaaa</Text><Pressable onPress={() => console.log('aaaa')} style={ {backgroundColor: 'blue'} }><Text>bbbbbbbbbbbbbbbbbbb<Text></Text></Text></Pressable></CustomPressableRipple>
+      {/* <CustomPressableRipple style={styles.button} rippleColor="black" rippleOpacity={0.2}><Text>aaaaaaaa</Text><Pressable onPress={() => console.log('aaaa')} style={ {backgroundColor: 'blue'} }><Text>bbbbbbbbbbbbbbbbbbb<Text></Text></Text></Pressable></CustomPressableRipple> */}
       <TouchableOpacity style={{ backgroundColor: 'red', padding: 30, }}><Text>Touch me!</Text></TouchableOpacity>
+      <CustomPressableRipple style={styles.button}>
+        <Text>Click me!</Text>
+      </CustomPressableRipple>
       <StatusBar style="auto" />
     </View>
   );
@@ -27,7 +30,8 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     backgroundColor: 'green',
-    padding: 10,
+    padding: 20,
+    
     borderRadius: 20,
   },
   pressable: {

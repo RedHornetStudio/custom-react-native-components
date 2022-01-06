@@ -18,7 +18,8 @@ const PanResponderTest = props => {
         [
           null,
           { dx: pan.x, dy: pan.y }
-        ]
+        ],
+        { useNativeDriver: false }
       ),
       onPanResponderRelease: () => {
         pan.flattenOffset();
@@ -31,7 +32,8 @@ const PanResponderTest = props => {
   return (
     <View style={styles.container}>
       <Text>Drag this box!</Text>
-      <Animated.View style={[styles.box, { transform: [{ translateX: pan.x }, { translateY: pan.y }] }]} {...panResponder.panHandlers}></Animated.View>
+      <Animated.View style={[styles.box]} {...panResponder.panHandlers}></Animated.View>
+      <Animated.View style={[styles.box2, { transform: [{ translateX: pan.x }, { translateY: pan.y }] }]}></Animated.View>
     </View>
   );
 };
@@ -45,6 +47,11 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     backgroundColor: 'blue',
+  },
+  box2: {
+    width: 50,
+    height: 50,
+    backgroundColor: 'red',
   }
 });
 
